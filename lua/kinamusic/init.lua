@@ -21,7 +21,7 @@ local function play_music_async(song_path)
     end
 
     -- 异步执行命令来播放音乐
-    current_job_id = vim.fn.jobstart({ "mpv", song_path }, {
+    current_job_id = vim.fn.jobstart({ "mpv", "--no-video", song_path }, {
         on_stdout = function(_, data, _)
             if data then
                 print(table.concat(data, "\n"))
@@ -163,51 +163,6 @@ function _G.select_file(buf, win, callback)
     end
 end
 
--- 创建 Neovim 命令
-vim.api.nvim_create_user_command('PlayMusic', function(opts)
-    local path = opts.args
-    if path == "" then
-        path = vim.fn.expand(M.music_folder)
-    else
-        path = vim.fn.expand(path)
-    end
-    if vim.fn.isdirectory(path) == 1 then
-        -- 如果是目录，获取目录下的所有音乐文件
-        local music_files = get_music_files(path)
-        if #music_files == 0 then
-            print("No music file found in the directory: " .. path)
-            return
-        end
-        _G.selected_music_files = music_files
-        -- 提供选项：随机播放或顺序播放
-        create_float_win({ "Play in sequence", "Play randomly", "Play single files" }, "handle_folder_option")
-    else
-        -- 如果不是目录，检查是否为文件
-        if vim.fn.filereadable(path) == 1 then
-            play_music_async(path)
-        else
-            -- 搜索默认音乐文件夹中的音乐文件
-            local music_file = search_music_file(path)
-            if music_file then
-                play_music_async(music_file)
-            else
-                print("No matching files found in the default music folder: " .. path)
-            end
-        end
-    end
-end, {
-    nargs = '?', -- 参数为可选
-    complete = 'file',
-    desc = 'Play music asynchronously'
-})
-
--- 停止播放音乐
-vim.api.nvim_create_user_command('StopMusic', function()
-    stop_music()
-end, {
-    desc = 'Stop playing'
-})
-
 -- 处理文件夹选项
 function _G.handle_folder_option(option)
     if option == "Play in sequence" or option == "Play randomly" then
@@ -215,6 +170,57 @@ function _G.handle_folder_option(option)
     elseif option == "Play single files" then
         create_float_win(_G.selected_music_files, "play_music_async")
     end
+end
+
+M.setup = function(options)
+    if options.music_folder then
+        M.music_folder = options.music_folder
+    end
+
+    -- 创建 Neovim 命令
+    vim.api.nvim_create_user_command('PlayMusic', function(opts)
+        local path = opts.args
+        if path == "" then
+            path = vim.fn.expand(M.music_folder)
+        else
+            path = vim.fn.expand(path)
+        end
+        if vim.fn.isdirectory(path) == 1 then
+            -- 如果是目录，获取目录下的所有音乐文件
+            local music_files = get_music_files(path)
+            if #music_files == 0 then
+                print("No music file found in the directory: " .. path)
+                return
+            end
+            _G.selected_music_files = music_files
+            -- 提供选项：随机播放或顺序播放
+            create_float_win({ "Play in sequence", "Play randomly", "Play single files" }, "handle_folder_option")
+        else
+            -- 如果不是目录，检查是否为文件
+            if vim.fn.filereadable(path) == 1 then
+                play_music_async(path)
+            else
+                -- 搜索默认音乐文件夹中的音乐文件
+                local music_file = search_music_file(path)
+                if music_file then
+                    play_music_async(music_file)
+                else
+                    print("No matching files found in the default music folder: " .. path)
+                end
+            end
+        end
+    end, {
+        nargs = '?', -- 参数为可选
+        complete = 'file',
+        desc = 'Play music asynchronously'
+    })
+
+    -- 停止播放音乐
+    vim.api.nvim_create_user_command('StopMusic', function()
+        stop_music()
+    end, {
+        desc = 'Stop playing'
+    })
 end
 
 return M

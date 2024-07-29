@@ -15,7 +15,8 @@ Using lazy.nvim:
 {
     "KinnariyaMamaTanha/kinamusic",
     opts = {
-        music_folder = "~/music", -- default music folder
+        -- The default music folder is
+        -- music_folder = "~/music"
     },
     cmd = {
         "PlayMusic",
@@ -26,7 +27,7 @@ Using lazy.nvim:
 
 ## Configuration
 
-There is only one option so far, using `music_folder` as a string to determine your own music storage folder.
+There is only one option so far, using `music_folder` as a string to customize your own music folder.
 
 ## Commands
 
