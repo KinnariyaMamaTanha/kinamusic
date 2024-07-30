@@ -26,7 +26,6 @@ Using lazy.nvim:
     },
     cmd = {
         "PlayMusic",
-        "PlayMusicChoose",
     },
 }
 ```
