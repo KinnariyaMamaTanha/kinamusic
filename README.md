@@ -6,6 +6,7 @@ A simple local music player inside neovim, using [mpv](https://mpv.io/). I love 
 
 - neovim (I am using 0.10)
 - [mpv](https://mpv.io/)
+- [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
 
 ## Installation
 
@@ -14,6 +15,9 @@ Using lazy.nvim:
 ```lua
 {
     "KinnariyaMamaTanha/kinamusic",
+    dependencies = {
+        "nvim-telescope/telescope.nvim",
+    },
     opts = {
         -- default options
         music_folder = "~/music",
@@ -36,10 +40,9 @@ Using lazy.nvim:
 ## Commands
 
 - `:PlayMusic`:
-    - `:PlayMusic /path/to/your/song.mp3`: play given music file.
+    - `:PlayMusic /path/to/your/song1.mp3 /path/to/your/song2.mp3`: play given music files.
     - `:PlayMusic [/path/to/your/music_directory]`: when given a directory, you can choose to play single file in it or play in sequence or randomly. Default the `music_folder`
-    - `:PlayMusic song_name_in_music_folder`: if the arg is neither a file or a directory, try to search it in the music_folder and play the first match.
-- `:PlayMusicChoose`: Choose music files in `music_folder`
+    - `:PlayMusic song_name_in_music_folder`: if the arg is neither a file or a directory, try to search it in the music_folder and display the matches.
 - `:PlayMusicPause`: Pause the music.
 - `:StopMusic`: Stop playing current music.
 - `:PlayMusicNext`: Jump to next music if playing music list.
@@ -56,4 +59,4 @@ Using lazy.nvim:
 - [x] Enable jump in the playlist.
 - [x] Enable loop.
 - [x] Enable fast forward and rewind.
-~~Better UI interface.~~
+- [x] Better UI interface.
