@@ -20,7 +20,7 @@ Using lazy.nvim:
     },
     opts = {
         -- default options
-        music_folder = "~/music",
+        music_folder = "~/Music",
         loop = true,
         max_loop = "inf"
     },

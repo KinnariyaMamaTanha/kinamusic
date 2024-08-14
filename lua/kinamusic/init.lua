@@ -1,5 +1,5 @@
 local M = {
-    music_folder = "~/music",
+    music_folder = "~/Music",
     loop = true,
     max_loop = "inf",
 }
